@@ -1,0 +1,59 @@
+# CI ainda nao esta ativo neste repositorio.
+# O workflow abaixo esta inteiramente comentado (nenhuma chave "on"/"jobs" real),
+# entao o GitHub Actions nao vai dispara-lo. Ele documenta o passo a passo
+# recomendado para quando quiserem ligar a esteira de CI.
+#
+# Passo a passo para ativar:
+#   1. Remova o "#" do inicio de cada linha abaixo (descomente o arquivo inteiro).
+#   2. Ajuste o gatilho ("on") se quiser rodar so em PRs, so na main, etc.
+#   3. Ajuste a versao do Node no "node-version" para bater com o .nvmrc/engines.
+#   4. Quando existir uma suite de testes real, troque o placeholder de "npm test"
+#      (hoje ele so falha de proposito) ou adicione um step "npm test" separado.
+#   5. Faca commit e abra um PR de teste para confirmar que o workflow dispara.
+#
+# name: CI
+#
+# on:
+#   push:
+#     branches: [main]
+#   pull_request:
+#     branches: [main]
+#
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#       # 1. Baixa o codigo do repositorio no runner.
+#       - name: Checkout
+#         uses: actions/checkout@v4
+#
+#       # 2. Instala o Node na versao fixada no .nvmrc, com cache do npm
+#       #    para acelerar instalacoes futuras.
+#       - name: Setup Node
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version-file: '.nvmrc'
+#           cache: 'npm'
+#
+#       # 3. Instalacao reprodutivel usando o package-lock.json (mais rapido
+#       #    e seguro que "npm install" em CI).
+#       - name: Install dependencies
+#         run: npm ci
+#
+#       # 4. Garante que o codigo segue o padrao de formatacao do Prettier.
+#       - name: Check formatting
+#         run: npm run format:check
+#
+#       # 5. Roda o ESLint sobre o monorepo (root + packages/*).
+#       - name: Lint
+#         run: npm run lint
+#
+#       # 6. Compila os workspaces (packages/a, packages/b) e o pacote raiz
+#       #    via TypeScript project references (tsc -b).
+#       - name: Build
+#         run: npm run build
+#
+#       # 7. Quando houver testes de verdade, descomente e ajuste o script
+#       #    "test" no package.json antes de habilitar este step.
+#       # - name: Test
+#       #   run: npm test

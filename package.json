@@ -1,0 +1,44 @@
+{
+  "name": "template-test",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/gfceccon/template-test#readme",
+  "bugs": {
+    "url": "https://github.com/gfceccon/template-test/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gfceccon/template-test.git"
+  },
+  "license": "Apache-2.0",
+  "author": "",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "tsc -b --clean",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "dependencies": {
+    "a": "*",
+    "b": "*"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.6.2",
+    "eslint": "^10.11.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.9",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.70.1"
+  }
+}

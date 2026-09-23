@@ -1,0 +1,3 @@
+const packageA = () => {};
+
+export { packageA };
