@@ -1,0 +1,62 @@
+# Mantem este repositorio atualizado com o template original
+# (gfceccon/template-test), abrindo um PR sempre que o template mudar.
+#
+# Como funciona:
+#   - A action faz um pull (squash) do template e descarta tudo o que estiver
+#     no .templatesyncignore; o restante vira um PR com o label "sync_template".
+#   - Em conflito, o template vence. Por isso qualquer arquivo que o projeto
+#     edita precisa estar no .templatesyncignore.
+#
+# Configuracao necessaria (uma vez por repositorio derivado):
+#   1. Crie um fine-grained PAT restrito a ESTE repositorio com as permissoes
+#      Contents (read/write), Pull requests (read/write) e Workflows (read/write).
+#      O GITHUB_TOKEN padrao nao pode alterar .github/workflows/, entao nao serve.
+#   2. Salve-o como secret "TEMPLATE_SYNC_TOKEN" (Settings > Secrets and
+#      variables > Actions).
+#
+# Detalhes completos em TEMPLATE.md.
+
+name: Template Sync
+
+on:
+  schedule:
+    # Toda segunda-feira, 06:00 UTC.
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+jobs:
+  repo-sync:
+    # O proprio template nao deve sincronizar consigo mesmo.
+    if: github.repository != 'gfceccon/template-test'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      # Falha cedo e com mensagem clara se o secret nao foi configurado.
+      - name: Verify token
+        env:
+          TOKEN: ${{ secrets.TEMPLATE_SYNC_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::error::Secret TEMPLATE_SYNC_TOKEN nao configurado. Veja TEMPLATE.md."
+            exit 1
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.TEMPLATE_SYNC_TOKEN }}
+          # Necessario ao usar PAT com esta action.
+          persist-credentials: false
+
+      - name: Sync with template
+        uses: AndreasAugustin/actions-template-sync@v2
+        with:
+          source_repo_path: gfceccon/template-test
+          target_gh_token: ${{ secrets.TEMPLATE_SYNC_TOKEN }}
+          upstream_branch: main
+          pr_title: 'chore(template): sync with gfceccon/template-test'
+          # Cada PR e um retrato completo do template, entao os anteriores
+          # ainda abertos ficam obsoletos quando um novo e criado.
+          is_pr_cleanup: true

@@ -1,0 +1,21 @@
+# Arquivos que pertencem ao projeto derivado e nunca devem ser sobrescritos
+# pelo template. Cada linha e um pathspec do git (nao um glob de .gitignore).
+# Este arquivo em si tambem nunca e sobrescrito: edite-o livremente no derivado.
+
+# Identidade e documentacao do projeto
+README.md
+LICENSE
+
+# Manifesto e lockfile da raiz: nome, repositorio, autor e dependencias proprias.
+package.json
+package-lock.json
+
+# Codigo do projeto (o pacote raiz que consome packages/a e packages/b)
+src/
+
+# Projetos costumam acrescentar entradas proprias
+.gitignore
+
+# O derivado ativa o CI descomentando este arquivo; sem o ignore, cada
+# sincronizacao o devolveria a versao toda comentada.
+.github/workflows/ci.yml
